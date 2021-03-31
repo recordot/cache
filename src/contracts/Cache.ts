@@ -1,5 +1,5 @@
 export default abstract class Cache {
-    abstract set(key: string, target: any): Promise<boolean>;
+    abstract set<T>(key: string, target: T): Promise<boolean>;
     abstract get(key: string): Promise<any>;
-    abstract release():any;
+    abstract release(): any;
 }

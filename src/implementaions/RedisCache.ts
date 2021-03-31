@@ -1,8 +1,8 @@
-import asyncRedis from "async-redis";
-import redis, { Commands, RedisClient, ClientOpts } from 'redis';
-import Cache from "../contracts/Cache";
+import asyncRedis from 'async-redis';
+import redis, { Commands, RedisClient } from 'redis';
+import Cache from '../contracts/Cache';
 
-export interface ConstructConfig{
+export interface ConstructConfig {
     host: string;
     port?: number;
     auth_pass?: string;
@@ -10,16 +10,16 @@ export interface ConstructConfig{
 
 type Omitted = Omit<RedisClient, keyof Commands<boolean>>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Promisified<T = RedisClient>
     extends Omitted,
         Commands<Promise<boolean>> {}
 
 export default class NodeCache extends Cache {
-
     protected redisClient: RedisClient;
     protected asyncRedisClient: Promisified<redis.RedisClient>;
 
-    constructor(config: ConstructConfig){
+    constructor(config: ConstructConfig) {
         super();
         this.redisClient = redis.createClient({
             host: config.host,
@@ -35,13 +35,13 @@ export default class NodeCache extends Cache {
 
     async get(key: string): Promise<any> {
         const ret = await this.asyncRedisClient.get(key);
-        return new Promise(resolve => {
-            if(typeof(ret) === "string")
-                resolve(JSON.parse(ret));
-            else
-                resolve(undefined);
+        return new Promise((resolve) => {
+            if (typeof ret === 'string') resolve(JSON.parse(ret));
+            else resolve(undefined);
         });
     }
 
-    release(): any {this.redisClient.quit(); }
+    release(): any {
+        this.redisClient.quit();
+    }
 }
